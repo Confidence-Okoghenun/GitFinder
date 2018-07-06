@@ -26,8 +26,30 @@ class UI {
       </div>
     </div>
     </div>
-    <h3 class="page-heading mb-3">Last Repos</h3>
+    <h3 class="page-heading mb-3">Latest Repos</h3>
     <div id="repos"></div>
     `;
+  }
+
+  clearProfile() {
+    this.profile.innerHTML = '';
+  }
+
+  showAlert(message, className) {
+    this.clearAlert();
+    let div = document.createElement('div');
+    div.className = className;
+    div.textContent = message;
+    document.querySelector('.searchContainer').insertAdjacentElement('afterbegin', div)
+    setTimeout(() => {
+      this.clearAlert(); 
+    }, 3000)
+  }
+
+  clearAlert() {
+    let currentAlert = document.querySelector('.alert');
+    if(currentAlert) {
+      currentAlert.remove();
+    }
   }
 }
