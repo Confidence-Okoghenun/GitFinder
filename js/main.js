@@ -11,7 +11,8 @@ const ui = new UI;
       if(data.profile.message === 'Not Found'){
         ui.showAlert('User not found', 'alert alert-danger');
       }else {
-        ui.showProfle(data.profile)
+        ui.showProfle(data.profile);
+        ui.showRepos(data.repos);
       }
     })
   } else {
