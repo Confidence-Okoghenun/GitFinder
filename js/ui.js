@@ -1,12 +1,12 @@
 class UI {
-  constructor(){
-    this.profile = document.querySelector('#profile');
+  constructor() {
+    this.profile = document.querySelector("#profile");
   }
 
   theme(clicks) {
-    let head = document.querySelector('head');
-    if(clicks%2 !== 0) {
-      head.innerHTML = `<style class="darkreader darkreader--user-agent" media="screen">html {
+    let head = document.querySelector("head");
+    if (clicks % 2 !== 0) {
+      head.innerHTML += `<style class="darkreader darkreader--user-agent" media="screen">html {
         background-color: #1d1d22 !important;
     }
     html, body, input, textarea, select, button {
@@ -90,10 +90,7 @@ class UI {
     [data-darkreader-inline-outline] {
       outline-color: var(--darkreader-inline-outline) !important;
     }</style>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta http-equiv="X-UA-Compatible" content="ie=edge">
-      <link rel="stylesheet" href="https://bootswatch.com/4/litera/bootstrap.min.css"><style class="darkreader darkreader--cors" media="screen" data-uri="https://bootswatch.com/4/litera/bootstrap.min.css">/*!
+      <style class="darkreader darkreader--cors" media="screen" data-uri="https://bootswatch.com/4/litera/bootstrap.min.css">/*!
      * Bootswatch v4.1.1
      * Homepage: https://bootswatch.com
      * Copyright 2012-2018 Thomas Park
@@ -4716,11 +4713,10 @@ class UI {
     .badge-secondary, .badge-warning {
         color: #cbc8c3;
     }</style>
-      <link rel="stylesheet" href="css/style.css"><style class="darkreader darkreader--sync" media="screen"></style>
-      <title>GitFinder</title>
+      <style class="darkreader darkreader--sync" media="screen"></style>
     `;
-    }else {
-      head.innerHTML = ` <meta charset="UTF-8">
+    } else {
+      head.innerHTML = `<meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta http-equiv="X-UA-Compatible" content="ie=edge">
       <link rel="stylesheet" href="https://bootswatch.com/4/litera/bootstrap.min.css">
@@ -4729,21 +4725,50 @@ class UI {
     }
   }
 
+    showRecents() {
+       let recentsDiv = document.querySelector('#recents');
+       let recentsArr = JSON.parse(localStorage.getItem("recents"));
+        if(recentsArr) {
+            recentsDiv.innerHTML = '';
+            recentsArr.forEach((profile, i) => {
+                recentsDiv.innerHTML += `
+                <div class="col col-recents">
+                    <div class="card card-recents">
+                        <img class="card-img-top" src="${profile.avatar}" alt="Profile image">
+                        <div class="card-main">
+                            <h5 class="card-title" id="name-${i}">${profile.name}</h5>
+                            <span class="badge badge-primary show-user">View Profile</span>
+                        </div>
+                    </div>
+                </div>`;
+            })
+        }
+    }
+
   showProfle(user) {
     this.profile.innerHTML = `
     <div class="card card-body">
     <div class="row">
       <div class="col-md-3">
-        <img src="${user.avatar_url}" alt="Profile image" class="img-fluid mb-2">
-        <a href="${user.html_url}" target="_blank" class="btn btn-primary btn-block mb-3"> View Profile</a>
+        <img src="${
+          user.avatar_url
+        }" alt="Profile image" class="img-fluid mb-2">
+        <a href="${
+          user.html_url
+        }" target="_blank" class="btn btn-primary btn-block mb-3"> View Profile</a>
       </div> 
       <div class="col-md-9">
-        <span class="badge badge-primary">Public Repos: ${user.public_repos}</span>
-        <span class="badge badge-secondary">Public Gists: ${user.public_repos}</span>
+        <span class="badge badge-primary">Public Repos: ${
+          user.public_repos
+        }</span>
+        <span class="badge badge-secondary">Public Gists: ${
+          user.public_repos
+        }</span>
         <span class="badge badge-success">Followers: ${user.followers}</span>
         <span class="badge badge-primary">Following: ${user.following}</span>
         <br><br>
         <ul class="list-group">
+          <li class="list-group-item">Name: ${user.login}</li>
           <li class="list-group-item">Company: ${user.company}</li>
           <li class="list-group-item">Website/Blog: ${user.blog}</li>
           <li class="list-group-item">Location: ${user.location}</li>
@@ -4755,14 +4780,48 @@ class UI {
     <h3 class="page-heading mb-3">Latest Repos</h3>
     <div id="repos"></div>
     `;
+
+    if (localStorage.getItem("recents")) {
+        let rec = JSON.parse(localStorage.getItem("recents"));
+        let newArr = rec;
+        if ((rec.length <= 3) && (rec[rec.length - 1].name !== user.login)) {
+        newArr.push({
+          name: user.login,
+          avatar: user.avatar_url,
+          profile: user.html_url
+        });
+      } else if ((rec.length === 4) && (rec[rec.length - 1].name !== user.login)) {
+        newArr.shift();
+        newArr.push({
+          name: user.login,
+          avatar: user.avatar_url,
+          profile: user.html_url
+        });
+      }
+
+      rec = newArr;
+      localStorage.setItem("recents", JSON.stringify(rec));
+      console.log(localStorage.getItem("recents"));
+    } else {
+      localStorage.setItem(
+        "recents",
+        JSON.stringify([
+          {
+            name: user.login,
+            avatar: user.avatar_url,
+            profile: user.html_url
+          }
+        ])
+      );
+    }
   }
 
   clearProfile() {
-    this.profile.innerHTML = '';
+    this.profile.innerHTML = "";
   }
 
   showRepos(repos) {
-    let output = '';
+    let output = "";
 
     repos.forEach(repo => {
       output = `
@@ -4772,8 +4831,12 @@ class UI {
             <a href="${repo.html_url}" target="_blank">${repo.name}</a>
         </div>
         <div class="col-md-6">
-            <span class="badge badge-primary">Stars: ${repo.stargazers_count}</span>
-            <span class="badge badge-secondary">Watchers: ${repo.watchers_count}</span>
+            <span class="badge badge-primary">Stars: ${
+              repo.stargazers_count
+            }</span>
+            <span class="badge badge-secondary">Watchers: ${
+              repo.watchers_count
+            }</span>
             <span class="badge badge-success">Forks: ${repo.forks_count}</span>
         </div>
       </div>
@@ -4781,24 +4844,27 @@ class UI {
     `;
     });
 
-    document.querySelector('#repos').innerHTML = output;
+    document.querySelector("#repos").innerHTML = output;
   }
 
   showAlert(message, className) {
     this.clearAlert();
-    let div = document.createElement('div');
+    let div = document.createElement("div");
     div.className = className;
     div.textContent = message;
-    document.querySelector('.searchContainer').insertAdjacentElement('afterbegin', div)
+    document
+      .querySelector(".searchContainer")
+      .insertAdjacentElement("afterbegin", div);
     setTimeout(() => {
-      this.clearAlert(); 
-    }, 3000)
+      this.clearAlert();
+    }, 3000);
   }
 
   clearAlert() {
-    let currentAlert = document.querySelector('.alert');
-    if(currentAlert) {
+    let currentAlert = document.querySelector(".alert");
+    if (currentAlert) {
       currentAlert.remove();
     }
   }
 }
+

@@ -1,3 +1,6 @@
+#theme-div {
+  padding-bottom: 0.5em;
+}
 .switch {
   position: relative;
   display: inline-block;
@@ -50,6 +53,19 @@ label {
   margin-top: 0.5rem;
   margin-bottom: 0;
 }
-#theme-div {
-  padding-bottom: 0.5em;
+.col-recents {
+  margin-bottom: 1em;
+}
+.card-recents {
+  width: 12rem;
+
+}
+.card-title {
+  margin-bottom: 0;
+}
+.card-main {
+  padding: 0.5em;
+}
+span.badge-primary {
+  cursor: pointer;
 }
