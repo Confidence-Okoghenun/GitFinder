@@ -4716,7 +4716,17 @@ class UI {
       <style class="darkreader darkreader--sync" media="screen"></style>
     `;
     } else {
-      head.innerHTML = `<meta charset="UTF-8">
+      head.innerHTML = `
+      <!-- Google Analytics -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-122321467-1"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+    
+        gtag('config', 'UA-122321467-1');
+      </script>
+      <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta http-equiv="X-UA-Compatible" content="ie=edge">
       <link rel="stylesheet" href="https://bootswatch.com/4/litera/bootstrap.min.css">
@@ -4724,26 +4734,6 @@ class UI {
       <title>GitFinder</title>`;
     }
   }
-
-    showRecents() {
-       let recentsDiv = document.querySelector('#recents');
-       let recentsArr = JSON.parse(localStorage.getItem("recents"));
-        if(recentsArr) {
-            recentsDiv.innerHTML = '';
-            recentsArr.forEach((profile, i) => {
-                recentsDiv.innerHTML += `
-                <div class="col col-recents">
-                    <div class="card card-recents">
-                        <img class="card-img-top" src="${profile.avatar}" alt="Profile image">
-                        <div class="card-main">
-                            <h5 class="card-title" id="name-${i}">${profile.name}</h5>
-                            <span class="badge badge-primary show-user">View Profile</span>
-                        </div>
-                    </div>
-                </div>`;
-            })
-        }
-    }
 
   showProfle(user) {
     this.profile.innerHTML = `
@@ -4758,14 +4748,18 @@ class UI {
         }" target="_blank" class="btn btn-primary btn-block mb-3"> View Profile</a>
       </div> 
       <div class="col-md-9">
-        <span class="badge badge-primary">Public Repos: ${
+        <span class="badge badge-primary mb-1">Public Repos: ${
           user.public_repos
         }</span>
-        <span class="badge badge-secondary">Public Gists: ${
+        <span class="badge badge-secondary mb-1">Public Gists: ${
           user.public_repos
         }</span>
-        <span class="badge badge-success">Followers: ${user.followers}</span>
-        <span class="badge badge-primary">Following: ${user.following}</span>
+        <span class="badge badge-success mb-1">Followers: ${
+          user.followers
+        }</span>
+        <span class="badge badge-primary mb-1">Following: ${
+          user.following
+        }</span>
         <br><br>
         <ul class="list-group">
           <li class="list-group-item">Name: ${user.login}</li>
@@ -4782,15 +4776,16 @@ class UI {
     `;
 
     if (localStorage.getItem("recents")) {
-        let rec = JSON.parse(localStorage.getItem("recents"));
-        let newArr = rec;
-        if ((rec.length <= 3) && (rec[rec.length - 1].name !== user.login)) {
+      let rec = JSON.parse(localStorage.getItem("recents"));
+      let newArr = rec;
+
+      if (rec.length <= 3 && rec[rec.length - 1].name !== user.login) {
         newArr.push({
           name: user.login,
           avatar: user.avatar_url,
           profile: user.html_url
         });
-      } else if ((rec.length === 4) && (rec[rec.length - 1].name !== user.login)) {
+      } else if (rec.length === 4 && rec[rec.length - 1].name !== user.login) {
         newArr.shift();
         newArr.push({
           name: user.login,
@@ -4801,7 +4796,6 @@ class UI {
 
       rec = newArr;
       localStorage.setItem("recents", JSON.stringify(rec));
-      console.log(localStorage.getItem("recents"));
     } else {
       localStorage.setItem(
         "recents",
@@ -4824,7 +4818,7 @@ class UI {
     let output = "";
 
     repos.forEach(repo => {
-      output = `
+      output += `
       <div class="card card-body mb-2">
       <div class="row">
         <div class="col-md-6">
@@ -4866,5 +4860,26 @@ class UI {
       currentAlert.remove();
     }
   }
-}
 
+  showRecents() {
+    let recentsDiv = document.querySelector("#recents");
+    let recentsArr = JSON.parse(localStorage.getItem("recents"));
+    if (recentsArr) {
+      recentsDiv.innerHTML = "";
+      recentsArr.forEach((profile, i) => {
+        recentsDiv.innerHTML += `
+                <div class="col-auto col-sm-6 col-md-3 col-recents">
+                    <div class="card card-recents">
+                        <img class="card-img-top" src="${
+                          profile.avatar
+                        }" alt="Profile image">
+                        <div class="card-main">
+                            <h5 class="card-title" id="name-${i}">${profile.name}</h5>
+                            <span class="badge badge-primary show-user">View Profile</span>
+                        </div>
+                    </div>
+                </div>`;
+      });
+    }
+  }
+}

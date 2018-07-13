@@ -1,8 +1,13 @@
 const github = new Github();
 const ui = new UI();
-const recents = document.querySelector('#recents-div');
 ui.showRecents();
+
 const searchUser = document.querySelector("#searchUser");
+const cancleSearch = document.querySelector('#cancle-search');
+const loading = document.querySelector('#loading');
+const recents = document.querySelector('#recents-div');
+
+loading.style.display = 'none';
 let timeout = null;
 searchUser.addEventListener("keyup", e => {
   clearTimeout(timeout);
@@ -10,31 +15,63 @@ searchUser.addEventListener("keyup", e => {
 
   timeout = setTimeout(() => {
     if (userText !== "") {
-      recents.style.display = 'none';
       makeUi(userText);
     } else {
-      ui.showRecents();
-      recents.style.display = 'block';
-      ui.clearProfile();
+      noSearch();
     }
   }, 500);
 });
 
 function makeUi(userText) {
-  github.getUser(userText).then(data => {
-    if (data.profile.message === "Not Found") {
-      ui.showAlert("User not found", "alert alert-danger");
-    } else {
-      recents.style.display = 'none';
-      ui.showProfle(data.profile);
-      ui.showRepos(data.repos);
-    }
+  ui.clearProfile();
+  cancleSearch.style.display = 'block';
+  searchUser.style.borderRadius = '0.25rem 0 0 0.25rem';
+  loading.style.display = 'block';
+  recents.style.display = 'none';
+
+  setTimeout(() => {
+    github.getUser(userText).then(data => {
+      loading.style.display = 'none';
+      if (data.profile.message === "Not Found") {
+        ui.showAlert("User not found", "alert alert-danger");
+      } else {
+        ui.showProfle(data.profile);
+        ui.showRepos(data.repos);
+      }
+    });
+  }, 2000)
+}
+
+function noSearch() {
+  cancleSearch.style.display = 'none';
+  searchUser.style.borderRadius = '0.25rem';
+  loading.style.display = 'none';
+  recents.style.display = 'block';
+  ui.showRecents();
+  ui.clearProfile();
+  document.querySelectorAll('.show-user').forEach((item, i) => {
+    item.addEventListener('click', () => {
+      const userName = document.querySelector(`#name-${i}`).innerHTML;
+      searchUser.value = userName;
+      makeUi(userName);
+    });
   });
 }
 
+cancleSearch.style.display = 'none';
+searchUser.style.borderRadius = '0.25rem';
+cancleSearch.addEventListener('click', () => {
+  searchUser.value = '';
+  searchUser.style.borderRadius = '0.25rem 0 0 0.25rem';
+  noSearch();
+});
+
 document.querySelectorAll('.show-user').forEach((item, i) => {
   item.addEventListener('click', () => {
-    makeUi(document.querySelector(`#name-${i}`).innerHTML)
+    const userName = document.querySelector(`#name-${i}`).innerHTML;
+    cancleSearch.style.display = 'block';
+    searchUser.value = userName;
+    makeUi(userName);
   });
 });
 
