@@ -4723,7 +4723,6 @@ class UI {
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
-    
         gtag('config', 'UA-122321467-1');
       </script>
       <meta charset="UTF-8">
@@ -4868,17 +4867,17 @@ class UI {
       recentsDiv.innerHTML = "";
       recentsArr.forEach((profile, i) => {
         recentsDiv.innerHTML += `
-                <div class="col-auto col-sm-6 col-md-3 col-recents">
-                    <div class="card card-recents">
-                        <img class="card-img-top" src="${
-                          profile.avatar
-                        }" alt="Profile image">
-                        <div class="card-main">
-                            <h5 class="card-title" id="name-${i}">${profile.name}</h5>
-                            <span class="badge badge-primary show-user">View Profile</span>
-                        </div>
+            <div class="col-auto col-sm-6 col-md-3 col-recents">
+                <div class="card card-recents">
+                    <img class="card-img-top" src="${
+                        profile.avatar
+                    }" alt="Profile image">
+                    <div class="card-main">
+                        <h5 class="card-title" id="name-${i}">${profile.name}</h5>
+                        <span class="badge badge-primary show-user">View Profile</span>
                     </div>
-                </div>`;
+                </div>
+            </div>`;
       });
     }
   }

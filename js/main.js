@@ -1,7 +1,9 @@
+// init classes form other js files
 const github = new Github();
 const ui = new UI();
 ui.showRecents();
 
+// grab DOM elements
 const searchUser = document.querySelector("#searchUser");
 const cancleSearch = document.querySelector('#cancle-search');
 const loading = document.querySelector('#loading');
@@ -9,6 +11,7 @@ const recents = document.querySelector('#recents-div');
 
 loading.style.display = 'none';
 let timeout = null;
+
 searchUser.addEventListener("keyup", e => {
   clearTimeout(timeout);
   const userText = e.target.value;
@@ -22,6 +25,7 @@ searchUser.addEventListener("keyup", e => {
   }, 500);
 });
 
+//makes the search result ui
 function makeUi(userText) {
   ui.clearProfile();
   cancleSearch.style.display = 'block';
@@ -42,6 +46,7 @@ function makeUi(userText) {
   }, 2000)
 }
 
+//function runs when search bar is empty
 function noSearch() {
   cancleSearch.style.display = 'none';
   searchUser.style.borderRadius = '0.25rem';
@@ -58,6 +63,7 @@ function noSearch() {
   });
 }
 
+//behaviour for the cancel button
 cancleSearch.style.display = 'none';
 searchUser.style.borderRadius = '0.25rem';
 cancleSearch.addEventListener('click', () => {
@@ -66,6 +72,7 @@ cancleSearch.addEventListener('click', () => {
   noSearch();
 });
 
+//event for recent user click
 document.querySelectorAll('.show-user').forEach((item, i) => {
   item.addEventListener('click', () => {
     const userName = document.querySelector(`#name-${i}`).innerHTML;
@@ -75,11 +82,11 @@ document.querySelectorAll('.show-user').forEach((item, i) => {
   });
 });
 
+//click counter for the dark theme
 let clicks = 1;
 document.querySelector("#theme").addEventListener("click", () => {
   if (clicks % 2 !== 0) {
     ui.theme(clicks);
-
     clicks += 1;
   } else {
     ui.theme(clicks);
