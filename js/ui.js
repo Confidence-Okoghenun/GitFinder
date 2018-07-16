@@ -4744,7 +4744,7 @@ class UI {
         }" alt="Profile image" class="img-fluid mb-2">
         <a href="${
           user.html_url
-        }" target="_blank" class="btn btn-primary btn-block mb-3"> View Profile</a>
+        }" target="_blank" class="btn btn-primary btn-block mb-3"> View on GitHub</a>
       </div> 
       <div class="col-md-9">
         <span class="badge badge-primary mb-1">Public Repos: ${
@@ -4762,10 +4762,10 @@ class UI {
         <br><br>
         <ul class="list-group">
           <li class="list-group-item">Name: ${user.login}</li>
-          <li class="list-group-item">Company: ${user.company}</li>
-          <li class="list-group-item">Website/Blog: ${user.blog}</li>
-          <li class="list-group-item">Location: ${user.location}</li>
-          <li class="list-group-item">Member since: ${user.created_at}</li>
+          <li class="list-group-item">Company: ${user.company || 'N/A'}</li>
+          <li class="list-group-item">Website/Blog: ${user.blog || 'N/A'}</li>
+          <li class="list-group-item">Location: ${user.location || 'N/A'}</li>
+          <li class="list-group-item">Member since: ${user.created_at.slice(0,10)}</li>
         </ul>
       </div>
     </div>
@@ -4778,20 +4778,28 @@ class UI {
       let rec = JSON.parse(localStorage.getItem("recents"));
       let newArr = rec;
 
-      if (rec.length <= 3 && rec[rec.length - 1].name !== user.login) {
-        newArr.push({
-          name: user.login,
-          avatar: user.avatar_url,
-          profile: user.html_url
+      function add(name) {
+        let found = rec.some(function(el) {
+          return el.name === name;
         });
-      } else if (rec.length === 4 && rec[rec.length - 1].name !== user.login) {
-        newArr.shift();
-        newArr.push({
-          name: user.login,
-          avatar: user.avatar_url,
-          profile: user.html_url
-        });
+        if (!found) {
+          if (rec.length === 4) {
+            newArr.shift();
+            newArr.push({
+              name: user.login,
+              avatar: user.avatar_url,
+              profile: user.html_url
+            });
+          } else {
+            newArr.push({
+              name: user.login,
+              avatar: user.avatar_url,
+              profile: user.html_url
+            });
+          }
+        }
       }
+      add(user.login);
 
       rec = newArr;
       localStorage.setItem("recents", JSON.stringify(rec));
@@ -4870,10 +4878,12 @@ class UI {
             <div class="col-auto col-sm-6 col-md-3 col-recents">
                 <div class="card card-recents">
                     <img class="card-img-top" src="${
-                        profile.avatar
+                      profile.avatar
                     }" alt="Profile image">
                     <div class="card-main">
-                        <h5 class="card-title" id="name-${i}">${profile.name}</h5>
+                        <h5 class="card-title" id="name-${i}">${
+          profile.name
+        }</h5>
                         <span class="badge badge-primary show-user">View Profile</span>
                     </div>
                 </div>

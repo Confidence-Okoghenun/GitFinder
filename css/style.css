@@ -1,6 +1,9 @@
 #theme-div {
   padding-bottom: 0.5em;
 }
+#git-link {
+  color: white;
+}
 #dark-text {
   display: block;
   float: left;
